@@ -1,0 +1,78 @@
+---
+title       : University Rankings Application
+subtitle    : Presentation
+author      : Ivan Boyaryn
+job         : Software Engineer
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+--- 
+
+<style>
+.title-slide { background-image: url(images/univer0.jpg); background-size:cover; }
+.title-slide hgroup > h1, 
+.title-slide hgroup > h2, 
+.title-slide hgroup > p {
+  color: white ;
+}
+</style>
+
+## What is it about?
+
+Are you a young person wanting to choose the right university to apply for in the future?
+
+
+Are you a parent or grandparent concerned about the future of your kid(s) or their kid(s)?
+
+
+In any case, you're in the right place. This application will help you!
+
+
+You'll get prediction of the next few years' scores of your university of interest.
+
+--- .class #id 
+
+## How to use it
+
+1. Just go to https://jonny.shinyapps.io/shiny
+
+2. On the Application tab on the left side you can select a country, one of the popular universities in it, and the year for which you would like to predict the score.
+Just try!
+
+3. On the right side you will see the score.
+
+--- .class #id 
+
+## Algorithm
+
+The prediction algorithm involves polynomial curves fitting model whenever possible, and uses the average of available scores if there isn't enough data.
+
+If you are interested in inner implementation, let's look at prediction for John Hopkins University, for example:
+
+
+```r
+library(splines)
+uni.data <- read.csv("data/world_university_rankings_2010_2015.csv", sep = ";")
+uni.data$endYear <- as.integer(substr(uni.data$Year, 6, 9))
+JHU.scores <- subset(uni.data, Institution == "Johns Hopkins University", c('endYear', 'Score'))
+bsBasis <- bs(JHU.scores$endYear, df = 3)
+fit <- lm(Score ~ bsBasis, data = JHU.scores)
+result <- predict(fit, newdata = data.frame(endYear = 2016:2020))
+names(result) <- 2016:2020
+result
+```
+
+```
+##     2016     2017     2018     2019     2020 
+## 86.32857 86.08571 85.17143 83.98571 82.92857
+```
+
+--- .class #id 
+
+## Contact
+
+If you would like to contact me, find me on LinkedIn: http://linkedin.com/in/boyaryn
+
